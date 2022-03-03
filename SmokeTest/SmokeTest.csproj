@@ -1,12 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net48;netstandard1.1;netstandard1.4;netstandard1.6;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net48;netstandard2.0</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Fody" Version="6.6.0" PrivateAssets="all" />
     <ProjectReference Include="..\PropertyChanged\PropertyChanged.csproj" />
+    <Reference Include="Microsoft.Practices.Prism">
+      <HintPath>Microsoft.Practices.Prism.dll</HintPath>
+    </Reference>
     <WeaverFiles Include="$(SolutionDir)$(SolutionName).Fody\bin\$(Configuration)\netstandard2.0\$(SolutionName).Fody.dll" />
   </ItemGroup>
 

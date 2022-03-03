@@ -1,7 +1,7 @@
 ﻿namespace SmokeTest
 {
     using System.ComponentModel;
-
+    using Microsoft.Practices.Prism.ViewModel;
     using PropertyChanged;
 
 #pragma warning disable CS0067
@@ -15,7 +15,7 @@
     }
 
     [AddINotifyPropertyChangedInterface]
-    public class Class2
+    public class Class2 : NotificationObject
     {
         public int Property1 { get; set; }
     }
