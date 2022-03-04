@@ -30,11 +30,11 @@ public partial class ModuleWeaver
             AddClass(typeDefinition);
         }
 
-        PopulateINotifyNodes(Nodes);
-        foreach (var notifyNode in NotifyNodes)
-        {
-            Nodes.Remove(notifyNode);
-        }
+        //PopulateINotifyNodes(Nodes);
+        //foreach (var notifyNode in NotifyNodes)
+        //{
+        //    Nodes.Remove(notifyNode);
+        //}
         PopulateInjectedINotifyNodes(Nodes);
     }
 
@@ -57,15 +57,17 @@ public partial class ModuleWeaver
         {
             if (HasNotifyPropertyChangedAttribute(node.TypeDefinition))
             {
-                if (HierarchyImplementsINotify(node.TypeDefinition))
-                {
-                    throw new WeavingException($"The type '{node.TypeDefinition.FullName}' already implements INotifyPropertyChanged so [AddINotifyPropertyChangedInterfaceAttribute] is redundant.");
-                }
+                var isImplementedNotifyPropertyChanged = HierarchyImplementsINotify(node.TypeDefinition);
+                //if (HierarchyImplementsINotify(node.TypeDefinition))
+                //{
+                //    throw new WeavingException($"The type '{node.TypeDefinition.FullName}' already implements INotifyPropertyChanged so [AddINotifyPropertyChangedInterfaceAttribute] is redundant.");
+                //}
                 if (node.TypeDefinition.GetPropertyChangedAddMethods().Any())
                 {
                     throw new WeavingException($"The type '{node.TypeDefinition.FullName}' already has a PropertyChanged event. If type has a [AddINotifyPropertyChangedInterfaceAttribute] then the PropertyChanged event can be removed.");
                 }
-                InjectINotifyPropertyChangedInterface(node.TypeDefinition);
+                if (!isImplementedNotifyPropertyChanged)
+                    InjectINotifyPropertyChangedInterface(node.TypeDefinition);
                 NotifyNodes.Add(node);
                 continue;
             }

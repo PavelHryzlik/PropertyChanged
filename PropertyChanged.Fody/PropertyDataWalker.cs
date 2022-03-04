@@ -2,6 +2,7 @@
 using System.Linq;
 using Fody;
 using Mono.Cecil;
+using Mono.Cecil.Cil;
 
 public partial class ModuleWeaver
 {
@@ -24,6 +25,30 @@ public partial class ModuleWeaver
                 if (property.SetMethod.IsStatic)
                 {
                     continue;
+                }
+
+                if (property.SetMethod.IsPrivate)
+                {
+                    continue;
+                }
+
+                if (property.SetMethod.HasBody &&
+                    property.SetMethod.Body.Instructions.Any())
+                {
+                    var instructions = property.SetMethod.Body.Instructions;
+                    var list = instructions.Where(i => i.OpCode != OpCodes.Nop).ToList();
+                    if (list.Count != 4)
+                        continue;
+                    if (list.All(x => x.OpCode != OpCodes.Ldarg_0))
+                        continue;
+                    if (list.All(x => x.OpCode != OpCodes.Ldarg_1))
+                        continue;
+                    if (list.All(x => x.OpCode != OpCodes.Ret))
+                        continue;
+                    if (list.All(x => x.OpCode != OpCodes.Stfld))
+                        continue;
+                    //if (list.All(o => !(o.Operand is FieldReference)))
+                    //    continue;
                 }
 
                 GetPropertyData(property, node);
